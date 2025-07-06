@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduTrack - Adaptive Learning Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --accent: #4895ef;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4cc9f0;
+            --warning: #f72585;
+            --info: #560bad;
+            --border-radius: 12px;
+            --box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fb;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1.5rem 1rem;
+            position: relative;
+            box-shadow: var(--box-shadow);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .logo i {
+            font-size: 1.8rem;
+            margin-right: 0.8rem;
+        }
+        
+        .logo h1 {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        
+        .nav-menu {
+            list-style: none;
+        }
+        
+        .nav-item {
+            margin-bottom: 0.5rem;
+            border-radius: var(--border-radius);
+            transition: all 0.3s ease;
+        }
+        
+        .nav-item:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+        
+        .nav-item.active {
+            background-color: rgba(255,255,255,0.2);
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            color: white;
+            text-decoration: none;
+            padding: 0.8rem 1rem;
+            font-size: 0.95rem;
+        }
+        
+        .nav-link i {
+            margin-right: 0.8rem;
+            font-size: 1.1rem;
+        }
+        
+        .profile-section {
+            position: absolute;
+            bottom: 1.5rem;
+            left: 0;
+            right: 0;
+            padding: 0 1rem;
+        }
+        
+        .profile {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem;
+            background-color: rgba(255,255,255,0.1);
+            border-radius: var(--border-radius);
+        }
+        
+        .profile-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 0.8rem;
+            border: 2px solid white;
+        }
+        
+        .profile-info h4 {
+            font-size: 0.9rem;
+            margin-bottom: 0.2rem;
+        }
+        
+        .profile-info p {
+            font-size: 0.75rem;
+            opacity: 0.8;
+        }
+        
+        /* Main Content Styles */
+        .main-content {
+            padding: 1.5rem 2rem;
+            overflow-y: auto;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .page-title h2 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .page-title p {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background-color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            box-shadow: var(--box-shadow);
+            width: 300px;
+        }
+        
+        .search-bar input {
+            border: none;
+            outline: none;
+            padding: 0.5rem;
+            width: 100%;
+            font-size: 0.9rem;
+        }
+        
+        .search-bar i {
+            color: #6c757d;
+            margin-right: 0.5rem;
+        }
+        
+        /* Dashboard Widgets */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--box-shadow);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .card-header h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .card-header i {
+            font-size: 1.2rem;
+            color: var(--accent);
+        }
+        
+        .stat-card {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 0.5rem 0;
+        }
+        
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        
+        .progress-card .progress-container {
+            margin-top: 1rem;
+        }
+        
+        .progress-item {
+            margin-bottom: 1rem;
+        }
+        
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.3rem;
+            font-size: 0.9rem;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+        }
+        
+        /* Alert Card */
+        .alert-card {
+            border-left: 4px solid var(--warning);
+        }
+        
+        .alert-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .alert-item:last-child {
+            border-bottom: none;
+        }
+        
+        .alert-icon {
+            color: var(--warning);
+            margin-right: 1rem;
+            font-size: 1.2rem;
+            margin-top: 0.2rem;
+        }
+        
+        .alert-content h4 {
+            font-size: 0.95rem;
+            margin-bottom: 0.3rem;
+        }
+        
+        .alert-content p {
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+        
+        /* Student Table */
+        .student-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        
+        .student-table th, .student-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .student-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .student-table tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .student-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 0.8rem;
+        }
+        
+        .student-name {
+            display: flex;
+            align-items: center;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 0.3rem 0.6rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .status-on-track {
+            background-color: rgba(76, 201, 240, 0.1);
+            color: var(--success);
+        }
+        
+        .status-struggling {
+            background-color: rgba(247, 37, 133, 0.1);
+            color: var(--warning);
+        }
+        
+        .status-improving {
+            background-color: rgba(86, 11, 173, 0.1);
+            color: var(--info);
+        }
+        
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--accent);
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        /* Resource Suggestions */
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+        
+        .resource-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            transition: transform 0.3s ease;
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .resource-img {
+            height: 120px;
+            width: 100%;
+            object-fit: cover;
+        }
+        
+        .resource-content {
+            padding: 1rem;
+        }
+        
+        .resource-category {
+            display: inline-block;
+            background-color: var(--light);
+            color: var(--primary);
+            padding: 0.3rem 0.6rem;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .resource-title {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .resource-desc {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-bottom: 1rem;
+        }
+        
+        .resource-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+        }
+        
+        .resource-difficulty {
+            color: var(--accent);
+            font-weight: 600;
+        }
+        
+        .resource-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .resource-btn:hover {
+            background-color: var(--secondary);
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 992px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+            
+            .search-bar {
+                width: 200px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .search-bar {
+                width: 100%;
+                margin-top: 1rem;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                <h1>EduTrack</h1>
+            </div>
+            
+            <ul class="nav-menu">
+                <li class="nav-item active">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-users"></i>
+                        <span>Students</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-book"></i>
+                        <span>Courses</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Analytics</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+    <a href="ai.html" class="nav-link">
+        <i class="fas fa-robot"></i>
+        <span>AI Assistant</span>
+    </a>
+</li>
+
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-lightbulb"></i>
+                        <span>Resources</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+            </ul>
+            
+            <div class="profile-section">
+                <div class="profile">
+                    <img src="https://randomuser.me/api/portraits/women/45.jpg" alt="Profile" class="profile-img">
+                    <div class="profile-info">
+                        <h4>Sarah Johnson</h4>
+                        <p>Math Teacher</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="header">
+                <div class="page-title">
+                    <h2>Class Dashboard</h2>
+                    <p>Welcome back! Here's your class overview</p>
+                </div>
+                
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search students, resources...">
+                </div>
+            </div>
+            
+            <!-- Dashboard Widgets -->
+            <div class="dashboard-grid">
+                <div class="card stat-card">
+                    <div class="card-header">
+                        <h3>Total Students</h3>
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-value">32</div>
+                    <div class="stat-label">In your class</div>
+                </div>
+                
+                <div class="card stat-card">
+                    <div class="card-header">
+                        <h3>Average Progress</h3>
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="stat-value">78%</div>
+                    <div class="stat-label">Class average</div>
+                </div>
+                
+                <div class="card stat-card">
+                    <div class="card-header">
+                        <h3>Struggling</h3>
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="stat-value">5</div>
+                    <div class="stat-label">Need attention</div>
+                </div>
+                
+                <div class="card progress-card">
+                    <div class="card-header">
+                        <h3>Subject Mastery</h3>
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-item">
+                            <div class="progress-info">
+                                <span>Algebra</span>
+                                <span>72%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 72%"></div>
+                            </div>
+                        </div>
+                        <div class="progress-item">
+                            <div class="progress-info">
+                                <span>Geometry</span>
+                                <span>85%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 85%"></div>
+                            </div>
+                        </div>
+                        <div class="progress-item">
+                            <div class="progress-info">
+                                <span>Calculus</span>
+                                <span>64%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 64%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card alert-card">
+                    <div class="card-header">
+                        <h3>Attention Needed</h3>
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <div class="alert-list">
+                        <div class="alert-item">
+                            <i class="fas fa-exclamation-circle alert-icon"></i>
+                            <div class="alert-content">
+                                <h4>Michael Scott is falling behind in Algebra</h4>
+                                <p>Scored below 60% on last 3 assignments</p>
+                            </div>
+                        </div>
+                        <div class="alert-item">
+                            <i class="fas fa-exclamation-circle alert-icon"></i>
+                            <div class="alert-content">
+                                <h4>Group project submission delayed</h4>
+                                <p>Team B hasn't submitted their project yet</p>
+                            </div>
+                        </div>
+                        <div class="alert-item">
+                            <i class="fas fa-exclamation-circle alert-icon"></i>
+                            <div class="alert-content">
+                                <h4>Attendance alert for Jessica Parker</h4>
+                                <p>Missed 3 classes this week</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Recent Activity</h3>
+                        <i class="fas fa-history"></i>
+                    </div>
+                    <div class="activity-list">
+                        <div class="alert-item">
+                            <i class="fas fa-check-circle" style="color: var(--success); margin-right: 1rem;"></i>
+                            <div class="alert-content">
+                                <h4>Assignment graded</h4>
+                                <p>Chapter 5 quiz graded for all students</p>
+                            </div>
+                        </div>
+                        <div class="alert-item">
+                            <i class="fas fa-comment" style="color: var(--accent); margin-right: 1rem;"></i>
+                            <div class="alert-content">
+                                <h4>New message from parent</h4>
+                                <p>Mrs. Rodriguez sent a message about homework</p>
+                            </div>
+                        </div>
+                        <div class="alert-item">
+                            <i class="fas fa-upload" style="color: var(--info); margin-right: 1rem;"></i>
+                            <div class="alert-content">
+                                <h4>New resource uploaded</h4>
+                                <p>Algebra practice problems added to resources</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Student Progress Table -->
+            <div class="card" style="margin-bottom: 2rem;">
+                <div class="card-header">
+                    <h3>Student Progress</h3>
+                    <i class="fas fa-table"></i>
+                </div>
+                <table class="student-table">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Overall Progress</th>
+                            <th>Last Assignment</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="student-name">
+                                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Student" class="student-avatar">
+                                    <span>Michael Scott</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 58%"></div>
+                                </div>
+                            </td>
+                            <td>56%</td>
+                            <td><span class="status status-struggling">Struggling</span></td>
+                            <td><button class="action-btn"><i class="fas fa-eye"></i></button></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="student-name">
+                                    <img src="https://randomuser.me/api/portraits/women/28.jpg" alt="Student" class="student-avatar">
+                                    <span>Jessica Parker</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 92%"></div>
+                                </div>
+                            </td>
+                            <td>95%</td>
+                            <td><span class="status status-on-track">On Track</span></td>
+                            <td><button class="action-btn"><i class="fas fa-eye"></i></button></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="student-name">
+                                    <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Student" class="student-avatar">
+                                    <span>David Wilson</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 76%"></div>
+                                </div>
+                            </td>
+                            <td>82%</td>
+                            <td><span class="status status-improving">Improving</span></td>
+                            <td><button class="action-btn"><i class="fas fa-eye"></i></button></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="student-name">
+                                    <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="Student" class="student-avatar">
+                                    <span>Emily Rodriguez</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 64%"></div>
+                                </div>
+                            </td>
+                            <td>68%</td>
+                            <td><span class="status status-struggling">Struggling</span></td>
+                            <td><button class="action-btn"><i class="fas fa-eye"></i></button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Personalized Resource Suggestions -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>Personalized Resource Suggestions</h3>
+                    <i class="fas fa-lightbulb"></i>
+                </div>
+                <div class="resource-grid">
+                    <div class="resource-card">
+                        <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Resource" class="resource-img">
+                        <div class="resource-content">
+                            <span class="resource-category">Algebra</span>
+                            <h4 class="resource-title">Quadratic Equations Masterclass</h4>
+                            <p class="resource-desc">Interactive video lessons with practice problems for students struggling with quadratics.</p>
+                            <div class="resource-footer">
+                                <span class="resource-difficulty">Medium</span>
+                                <button class="resource-btn">Assign</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="resource-card">
+                        <img src="https://images.unsplash.com/photo-1509869175650-a1d97972541a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Resource" class="resource-img">
+                        <div class="resource-content">
+                            <span class="resource-category">Geometry</span>
+                            <h4 class="resource-title">Visual Proofs for Triangles</h4>
+                            <p class="resource-desc">Step-by-step visual explanations of triangle theorems and properties.</p>
+                            <div class="resource-footer">
+                                <span class="resource-difficulty">Easy</span>
+                                <button class="resource-btn">Assign</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="resource-card">
+                        <img src="https://images.unsplash.com/photo-1639762681057-408e52192e55?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Resource" class="resource-img">
+                        <div class="resource-content">
+                            <span class="resource-category">Calculus</span>
+                            <h4 class="resource-title">Derivatives Explained</h4>
+                            <p class="resource-desc">Real-world applications of derivatives with interactive simulations.</p>
+                            <div class="resource-footer">
+                                <span class="resource-difficulty">Hard</span>
+                                <button class="resource-btn">Assign</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="resource-card">
+                        <img src="https://images.unsplash.com/photo-1581094271901-8022df4466f9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Resource" class="resource-img">
+                        <div class="resource-content">
+                            <span class="resource-category">Differentiation</span>
+                            <h4 class="resource-title">Remedial Exercises</h4>
+                            <p class="resource-desc">Targeted practice for students who need extra help with foundational concepts.</p>
+                            <div class="resource-footer">
+                                <span class="resource-difficulty">Easy</span>
+                                <button class="resource-btn">Assign</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
